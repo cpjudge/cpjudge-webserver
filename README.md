@@ -31,8 +31,8 @@ If you point your browser to [http://127.0.0.1:3000](http://127.0.0.1:3000) you 
 ## Docker setup
 
 To run the application using docker, you need to have the following installed:
-+ [Docker]()
-+ [Docker Compose]()
++ [Docker](https://docs.docker.com/install/)
++ [Docker Compose](https://docs.docker.com/compose/install/)
 
 We have used two services in our [docker-compose file](./docker-compose.yml) - `db` and `app`.
 
