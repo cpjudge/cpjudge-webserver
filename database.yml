@@ -1,14 +1,14 @@
 development:
   dialect: "mysql"
   database: "cpjudge_webserver_development"
-  host: "localhost"
+  host: "db"
   port: "3306"
   user: "root"
   password: "root"
   encoding: "utf8mb4_general_ci"
 
 test:
-  url: {{envOr "TEST_DATABASE_URL" "mysql://root:root@(localhost:3306)/cpjudge_webserver_test?parseTime=true&multiStatements=true&readTimeout=1s"}}
+  url: {{envOr "TEST_DATABASE_URL" "mysql://root:root@(db:3306)/cpjudge_webserver_test?parseTime=true&multiStatements=true&readTimeout=1s"}}
 
 production:
-  url: {{envOr "DATABASE_URL" "mysql://root:root@(localhost:3306)/cpjudge_webserver_production?parseTime=true&multiStatements=true&readTimeout=1s"}}
+  url: {{envOr "DATABASE_URL" "mysql://root:root@(db:3306)/cpjudge_webserver_production?parseTime=true&multiStatements=true&readTimeout=1s"}}
