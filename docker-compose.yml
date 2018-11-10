@@ -1,0 +1,28 @@
+version: '3.3'
+
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=cpjudge_webserver_development
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_ROOT_HOST=%
+  
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/go/src/github.com/cpjudge/cpjudge_webserver
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+
+volumes:
+  db_data:
