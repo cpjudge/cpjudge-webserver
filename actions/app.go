@@ -45,8 +45,10 @@ func App() *buffalo.App {
 		// Remove to disable this.
 		app.Use(middleware.PopTransaction(models.DB))
 
-		app.GET("/", HomeHandler)
-
+		authenticateGroup := app.Group("/")
+		authenticateGroup.Use(AuthenticationMiddleware)
+		authenticateGroup.GET("/", HomeHandler)
+		app.GET("/signup", SignupHandler)
 	}
 
 	return app
