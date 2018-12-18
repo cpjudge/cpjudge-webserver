@@ -1,0 +1,8 @@
+<div class="page-header">
+  <h1>New Question</h1>
+</div>
+
+<%= form_for(question, {action: questionsPath(), method: "POST"}) { %>
+  <%= partial("questions/form.html") %>
+  <a href="<%= questionsPath() %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
+<% } %>

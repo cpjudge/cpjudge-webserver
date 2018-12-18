@@ -1,0 +1,3 @@
+create_table("questions") {
+	t.Column("id", "uuid", {primary: true})
+}

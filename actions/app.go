@@ -45,8 +45,13 @@ func App() *buffalo.App {
 		// Remove to disable this.
 		app.Use(middleware.PopTransaction(models.DB))
 
-		app.GET("/", HomeHandler)
+		type QuestionsResource struct {
+			buffalo.Resource
+		}
 
+		app.Resource("/questions", QuestionsResource{})
+
+		app.GET("/", HomeHandler)
 	}
 
 	return app
