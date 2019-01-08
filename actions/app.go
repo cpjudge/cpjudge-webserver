@@ -48,7 +48,8 @@ func App() *buffalo.App {
 		authenticateGroup := app.Group("/")
 		authenticateGroup.Use(AuthenticationMiddleware)
 		authenticateGroup.GET("/", HomeHandler)
-		app.GET("/signup", SignupHandler)
+		app.POST("/signup", SignupHandler)
+		app.POST("/signin", SigninHandler)
 	}
 
 	return app

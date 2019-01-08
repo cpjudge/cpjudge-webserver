@@ -45,8 +45,7 @@ func AuthenticationMiddleware(next buffalo.Handler) buffalo.Handler {
 
 // GenerateTokenAndSetCookie : Generates a new token from the username
 // in header and returns the signed token as a string.
-func GenerateTokenAndSetCookie(c buffalo.Context) error {
-	username := c.Request().Header.Get("username")
+func GenerateTokenAndSetCookie(c buffalo.Context, username string) error {
 	// fmt.Println(username)
 	if username == "" {
 		return errors.New("username not provided")
