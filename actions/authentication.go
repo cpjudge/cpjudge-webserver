@@ -2,8 +2,6 @@ package actions
 
 import (
 	"errors"
-	"fmt"
-	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gobuffalo/buffalo"
@@ -22,8 +20,6 @@ func AuthenticationMiddleware(next buffalo.Handler) buffalo.Handler {
 		tokenString, err := c.Cookies().Get(CpJudgeToken)
 		if err != nil {
 			// No cookie
-			fmt.Println(err)
-			fmt.Println(tokenString)
 			return c.Render(401, r.JSON(map[string]string{"message": err.Error()}))
 		}
 
@@ -61,6 +57,6 @@ func GenerateTokenAndSetCookie(c buffalo.Context, username string) error {
 	if err != nil {
 		return err
 	}
-	c.Cookies().SetWithExpirationTime(CpJudgeToken, tokenString, time.Now().AddDate(1, 0, 0)) // Expires after a year
+	c.Cookies().SetWithPath(CpJudgeToken, tokenString, "/") // Expires after a year
 	return nil
 }

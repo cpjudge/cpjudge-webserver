@@ -13,6 +13,12 @@ import (
 func HostHandler(c buffalo.Context) error {
 	fmt.Println("In hosts")
 	fmt.Println("GET params were:", c.Request().URL.Query())
+	hosts := []models.Host{}
+	err := models.DB.All(&hosts)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(hosts)
 	name := c.Request().URL.Query().Get("name")
 	if name != "" {
 		err := insertHost(c, name)

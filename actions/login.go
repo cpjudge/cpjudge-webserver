@@ -13,6 +13,24 @@ import (
 // SigninHandler : Handles signin.
 func SigninHandler(c buffalo.Context) error {
 	fmt.Println("GET params were:", c.Request().URL.Query())
+	users := []models.User{}
+	err := models.DB.All(&users)
+	if err != nil {
+		fmt.Println(err)
+	}
+	contests := []models.Contest{}
+	err = models.DB.All(&contests)
+	if err != nil {
+		fmt.Println(err)
+	}
+	hosts := []models.Host{}
+	err = models.DB.All(&hosts)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(users)
+	fmt.Println(contests)
+	fmt.Println(hosts)
 	username := c.Request().URL.Query().Get("username")
 	password := c.Request().URL.Query().Get("password")
 	if username != "" && password != "" {

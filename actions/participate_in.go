@@ -10,15 +10,14 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-// ContestHandler default implementation.
-func ContestHandler(c buffalo.Context) error {
-	fmt.Println("In Contests")
+// ParticipateInHandler default implementation.
+func ParticipateInHandler(c buffalo.Context) error {
+	fmt.Println("In ParticipateIn")
 	fmt.Println("GET params were:", c.Request().URL.Query())
-	title := c.Request().URL.Query().Get("title")
-	description := c.Request().URL.Query().Get("description")
-	hostID := c.Request().URL.Query().Get("host_id")
-	if title != "" && hostID != "" {
-		err := insertContest(c, title, description, hostID)
+	userID := c.Request().URL.Query().Get("user_id")
+	contestID := c.Request().URL.Query().Get("contest_id")
+	if userID != "" && contestID != "" {
+		err := insertParticiapteIn(c, userID, contestID)
 		if err != nil {
 			return c.Render(400, r.JSON(map[string]string{"message": err.Error()}))
 		}
@@ -27,21 +26,24 @@ func ContestHandler(c buffalo.Context) error {
 	return c.Render(400, r.JSON(map[string]string{"message": "Bad request"}))
 }
 
-func insertContest(c buffalo.Context, title string, description string, hostID string) error {
-	hostUUID, err := uuid.FromString(hostID)
+func insertParticiapteIn(c buffalo.Context, userID string, contestID string) error {
+	userUUID, err := uuid.FromString(userID)
 	if err != nil {
 		return err
 	}
-	contest := &models.Contest{
-		Title:       title,
-		Description: description,
-		HostID:      hostUUID,
+	contestUUID, err := uuid.FromString(contestID)
+	if err != nil {
+		return err
+	}
+	participateIn := &models.ParticipateIn{
+		UserID:    userUUID,
+		ContestID: contestUUID,
 	}
 	tx, ok := c.Value("tx").(*pop.Connection)
 	if !ok {
 		return errors.New("Transaction error")
 	}
-	verrs, err := tx.ValidateAndCreate(contest)
+	verrs, err := tx.ValidateAndCreate(participateIn)
 	if err != nil {
 		fmt.Println("test", err.Error())
 		return err

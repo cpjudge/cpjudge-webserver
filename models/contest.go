@@ -17,7 +17,7 @@ type Contest struct {
 	UpdatedAt   time.Time `json:"updated_at" db:"updated_at"`
 	Title       string    `json:"title" db:"title"`
 	Description string    `json:"description" db:"description"`
-	HostID      uuid.UUID `json:"host_id" db:"host_id"`
+	HostID      uuid.UUID `json:"host_id" db:"host_id" has_one:"hosts" fk_id:"id"`
 }
 
 // String is not required by pop and may be deleted

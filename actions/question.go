@@ -10,15 +10,16 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-// ContestHandler default implementation.
-func ContestHandler(c buffalo.Context) error {
-	fmt.Println("In Contests")
+// QuestionHandler default implementation.
+func QuestionHandler(c buffalo.Context) error {
+	fmt.Println("In Question")
 	fmt.Println("GET params were:", c.Request().URL.Query())
-	title := c.Request().URL.Query().Get("title")
-	description := c.Request().URL.Query().Get("description")
+	question := c.Request().URL.Query().Get("question")
+	editorial := c.Request().URL.Query().Get("editorial")
 	hostID := c.Request().URL.Query().Get("host_id")
-	if title != "" && hostID != "" {
-		err := insertContest(c, title, description, hostID)
+	contestID := c.Request().URL.Query().Get("contest_id")
+	if question != "" && hostID != "" && contestID != "" {
+		err := insertQuestion(c, question, editorial, hostID, contestID)
 		if err != nil {
 			return c.Render(400, r.JSON(map[string]string{"message": err.Error()}))
 		}
@@ -27,21 +28,26 @@ func ContestHandler(c buffalo.Context) error {
 	return c.Render(400, r.JSON(map[string]string{"message": "Bad request"}))
 }
 
-func insertContest(c buffalo.Context, title string, description string, hostID string) error {
+func insertQuestion(c buffalo.Context, questionText string, editorial string, hostID string, contestID string) error {
 	hostUUID, err := uuid.FromString(hostID)
 	if err != nil {
 		return err
 	}
-	contest := &models.Contest{
-		Title:       title,
-		Description: description,
-		HostID:      hostUUID,
+	contestUUID, err := uuid.FromString(contestID)
+	if err != nil {
+		return err
+	}
+	question := &models.Question{
+		QuestionText: questionText,
+		Editorial:    editorial,
+		HostID:       hostUUID,
+		ContestID:    contestUUID,
 	}
 	tx, ok := c.Value("tx").(*pop.Connection)
 	if !ok {
 		return errors.New("Transaction error")
 	}
-	verrs, err := tx.ValidateAndCreate(contest)
+	verrs, err := tx.ValidateAndCreate(question)
 	if err != nil {
 		fmt.Println("test", err.Error())
 		return err
