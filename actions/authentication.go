@@ -2,6 +2,7 @@ package actions
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -21,6 +22,8 @@ func AuthenticationMiddleware(next buffalo.Handler) buffalo.Handler {
 		tokenString, err := c.Cookies().Get(CpJudgeToken)
 		if err != nil {
 			// No cookie
+			fmt.Println(err)
+			fmt.Println(tokenString)
 			return c.Render(401, r.JSON(map[string]string{"message": err.Error()}))
 		}
 
