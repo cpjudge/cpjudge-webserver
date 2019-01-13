@@ -51,6 +51,7 @@ func App() *buffalo.App {
 		app.GET("/websocket", WebSocketHandler)
 		app.POST("/signup", SignupHandler)
 		app.POST("/signin", SigninHandler)
+		app.POST("/host", HostHandler)
 	}
 
 	return app
