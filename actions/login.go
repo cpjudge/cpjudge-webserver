@@ -28,6 +28,12 @@ func SigninHandler(c buffalo.Context) error {
 	if err != nil {
 		fmt.Println(err)
 	}
+	questions := []models.Question{}
+	err = models.DB.All(&questions)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(questions)
 	fmt.Println(users)
 	fmt.Println(contests)
 	fmt.Println(hosts)
