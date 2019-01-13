@@ -10,6 +10,7 @@ import (
 	"github.com/gobuffalo/validate/validators"
 )
 
+// User - represents a user in the system
 type User struct {
 	ID        uuid.UUID `json:"id" db:"id"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
@@ -19,6 +20,8 @@ type User struct {
 	Username  string    `json:"username" db:"username"`
 	Email     string    `json:"email" db:"email"`
 	Password  []byte    `json:"password" db:"password"`
+	Bio       string    `json:"bio" db:"email"`
+	Rating    int       `json:"rating" db:"rating"`
 }
 
 // String is not required by pop and may be deleted

@@ -48,6 +48,7 @@ func App() *buffalo.App {
 		authenticateGroup := app.Group("/")
 		authenticateGroup.Use(AuthenticationMiddleware)
 		authenticateGroup.GET("/", HomeHandler)
+		app.GET("/websocket", WebSocketHandler)
 		app.POST("/signup", SignupHandler)
 		app.POST("/signin", SigninHandler)
 	}

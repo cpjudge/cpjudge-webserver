@@ -19,12 +19,13 @@ func SignupHandler(c buffalo.Context) error {
 	email := c.Request().URL.Query().Get("email")
 	username := c.Request().URL.Query().Get("username")
 	password := c.Request().URL.Query().Get("password")
+	bio := c.Request().URL.Query().Get("bio")
 	if firstName != "" && lastName != "" && email != "" && username != "" && password != "" {
 		hashedPassword, err := encrypt(password)
 		if err != nil {
 			return c.Render(500, r.JSON(map[string]string{"message": "Encryption error"}))
 		}
-		err = insertUser(c, firstName, lastName, username, email, hashedPassword)
+		err = insertUser(c, firstName, lastName, username, email, hashedPassword, bio)
 		if err != nil {
 			return c.Render(400, r.JSON(map[string]string{"message": "Username already exists"}))
 		}
@@ -41,13 +42,15 @@ func encrypt(password string) ([]byte, error) {
 	return hashedPassword, nil
 }
 
-func insertUser(c buffalo.Context, firstName string, lastName string, username string, email string, password []byte) error {
+func insertUser(c buffalo.Context, firstName string, lastName string, username string, email string, password []byte, bio string) error {
 	user := &models.User{
 		FirstName: firstName,
 		LastName:  lastName,
 		Username:  username,
 		Email:     email,
 		Password:  password,
+		Bio:       bio,
+		Rating:    0,
 	}
 	tx, ok := c.Value("tx").(*pop.Connection)
 	if !ok {
@@ -55,7 +58,7 @@ func insertUser(c buffalo.Context, firstName string, lastName string, username s
 	}
 	verrs, err := tx.ValidateAndCreate(user)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("test", err.Error())
 		return err
 	}
 	fmt.Println(verrs)
