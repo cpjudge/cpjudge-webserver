@@ -29,7 +29,16 @@ func SignupHandler(c buffalo.Context) error {
 		if err != nil {
 			return c.Render(400, r.JSON(map[string]string{"message": "Username already exists"}))
 		}
-		return c.Render(200, r.JSON(map[string]string{"message": "Success"}))
+		// Success.
+		user, err1 := getUser(username)
+		if err1 != nil {
+			fmt.Println("dfgdhgdgdfgh", err)
+			return c.Render(500, r.JSON(map[string]string{"message": "Internal Server error"}))
+		}
+		return c.Render(200, r.JSON(map[string]string{
+			"username": username,
+			"rating":   string(user.Rating),
+		}))
 	}
 	return c.Render(400, r.JSON(map[string]string{"message": "Bad request"}))
 }

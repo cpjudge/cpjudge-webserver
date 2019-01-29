@@ -49,10 +49,30 @@ func SigninHandler(c buffalo.Context) error {
 		if err != nil {
 			return c.Render(500, r.JSON(map[string]string{"message": "Internal Server error"}))
 		}
-		// Sucess.
-		return c.Render(200, r.JSON(map[string]string{"message": "Check cookies"}))
+		// Success.
+		user, err1 := getUser(username)
+		if err1 != nil {
+			fmt.Println(err)
+			return c.Render(500, r.JSON(map[string]string{"message": "Internal Server error"}))
+		}
+		return c.Render(200, r.JSON(map[string]string{
+			"username": username,
+			"rating":   string(user.Rating),
+		}))
 	}
 	return c.Render(400, r.JSON(map[string]string{"message": "Bad request"}))
+}
+
+func getUser(username string) (models.User, error) {
+	users := &[]models.User{}
+	user := models.User{}
+	err := models.DB.Where("username = (?)", username).All(users)
+	if err != nil {
+		fmt.Println("errjhghkgkjhgkjgh", err)
+		return user, errors.New("User doesn't exist")
+	}
+	fmt.Println((*users)[0])
+	return (*users)[0], nil
 }
 
 func verifyPassword(c buffalo.Context, username string, password string) error {
