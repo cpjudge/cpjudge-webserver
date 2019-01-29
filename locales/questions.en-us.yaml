@@ -1,6 +1,0 @@
-- id: "question.created.success"
-  translation: "Question was successfully created."
-- id: "question.updated.success"
-  translation: "Question was successfully updated."
-- id: "question.destroyed.success"
-  translation: "Question was successfully destroyed."
