@@ -45,13 +45,17 @@ func App() *buffalo.App {
 		// Remove to disable this.
 		app.Use(middleware.PopTransaction(models.DB))
 
-		type QuestionsResource struct {
-			buffalo.Resource
-		}
-
-		app.Resource("/questions", QuestionsResource{})
-
-		app.GET("/", HomeHandler)
+		authenticateGroup := app.Group("/")
+		authenticateGroup.Use(AuthenticationMiddleware)
+		authenticateGroup.GET("/", HomeHandler)
+		app.GET("/websocket", WebSocketHandler)
+		app.POST("/signup", SignupHandler)
+		app.POST("/signin", SigninHandler)
+		authenticateGroup.POST("/host", HostHandler)
+		authenticateGroup.POST("/participate_in", ParticipateInHandler)
+		authenticateGroup.POST("/question", QuestionHandler)
+		authenticateGroup.POST("/test_case", TestCaseHandler)
+		authenticateGroup.POST("/contest", ContestHandler)
 	}
 
 	return app

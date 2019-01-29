@@ -1,0 +1,7 @@
+create_table("participate_in") {
+	t.Column("id", "uuid", {primary: true})
+	t.Column("user_id", "uuid", {})
+	t.Column("contest_id", "uuid", {})
+	t.ForeignKey("user_id", {"users": ["id"]}, {"on_delete": "cascade"})
+	t.ForeignKey("contest_id", {"contests": ["id"]}, {"on_delete": "cascade"})
+}
