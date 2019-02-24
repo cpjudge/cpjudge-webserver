@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/cpjudge/cpjudge_webserver/models"
@@ -38,6 +39,27 @@ func GetContestHandler(c buffalo.Context) error {
 		}))
 	}
 	return c.Render(200, r.JSON(contest))
+}
+
+// GetContestsHandler : get all contests
+func GetContestsHandler(c buffalo.Context) error {
+	contests, err := getContests()
+	if err != nil {
+		return c.Render(403, r.JSON(map[string]interface{}{
+			"message": err.Error(),
+		}))
+	}
+	return c.Render(200, r.JSON(contests))
+}
+
+func getContests() ([]models.Contest, error) {
+	contests := &[]models.Contest{}
+	err := models.DB.All(contests)
+	if err != nil {
+		fmt.Println("getQuestions error", err)
+		return *contests, errors.New("Contests doesn't exist")
+	}
+	return (*contests), nil
 }
 
 func insertContest(c buffalo.Context, title string, description string) error {
