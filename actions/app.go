@@ -57,6 +57,7 @@ func App() *buffalo.App {
 		authenticateGroup.GET("/question/{question_id}", GetQuestionHandler)
 		authenticateGroup.POST("/test_case", TestCaseHandler)
 		authenticateGroup.POST("/contest", ContestHandler)
+		authenticateGroup.GET("/contest/{contest_id}", GetContestHandler)
 	}
 
 	return app

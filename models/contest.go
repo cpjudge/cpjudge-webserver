@@ -13,8 +13,8 @@ import (
 // Contest - Defines a contest
 type Contest struct {
 	ID          uuid.UUID `json:"id" db:"id"`
-	CreatedAt   time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at" db:"updated_at"`
+	CreatedAt   time.Time `json:"-" db:"created_at"`
+	UpdatedAt   time.Time `json:"-" db:"updated_at"`
 	Title       string    `json:"title" db:"title"`
 	Description string    `json:"description" db:"description"`
 }
