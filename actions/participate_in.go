@@ -26,6 +26,31 @@ func ParticipateInHandler(c buffalo.Context) error {
 	return c.Render(400, r.JSON(map[string]string{"message": "Bad request"}))
 }
 
+// GetParticipatesInHandler : get all participate_ins
+func GetParticipatesInHandler(c buffalo.Context) error {
+	user_id := c.Param("user_id")
+	contests, err := getContests(username)
+	if err != nil {
+		return c.Render(403, r.JSON(map[string]interface{}{
+			"message": err.Error(),
+		}))
+	}
+	return c.Render(200, r.JSON(contests))
+}
+
+func getContests(username string) ([]models.Question, error) {
+	questions := &[]models.Question{}
+	err := models.DB.All(questions)
+
+	if err != nil {
+		fmt.Println("getQuestions error", err)
+		return *questions, errors.New("Questions doesn't exist")
+	}
+
+	// fmt.Println((*questions))
+	return (*questions), nil
+}
+
 func insertParticiapteIn(c buffalo.Context, userID string, contestID string) error {
 	userUUID, err := uuid.FromString(userID)
 	if err != nil {

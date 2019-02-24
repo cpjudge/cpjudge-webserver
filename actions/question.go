@@ -49,7 +49,7 @@ func GetQuestionHandler(c buffalo.Context) error {
 	return c.Render(200, r.JSON(question))
 }
 
-// GetQuestionsHandler : get all questionsID
+// GetQuestionsHandler : get all questions
 func GetQuestionsHandler(c buffalo.Context) error {
 	questions, err := getQuestions()
 	if err != nil {
