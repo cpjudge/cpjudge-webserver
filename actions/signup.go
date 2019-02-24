@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/cpjudge/cpjudge_webserver/models"
+
 	"github.com/gobuffalo/buffalo"
-	"github.com/gobuffalo/pop"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -23,35 +23,78 @@ func SignupHandler(c buffalo.Context) error {
 	if firstName != "" && lastName != "" && email != "" && username != "" && password != "" {
 		hashedPassword, err := encrypt(password)
 		if err != nil {
-			return c.Render(500, r.JSON(map[string]string{"message": "Encryption error"}))
+			return c.Render(500, r.JSON(map[string]string{
+				"message": "Encryption error",
+			}))
 		}
 		err = insertUser(c, firstName, lastName, username, email, hashedPassword, bio)
 		if err != nil {
-			return c.Render(400, r.JSON(map[string]string{"message": "Username already exists"}))
+			return c.Render(400, r.JSON(map[string]string{
+				"message": "Username already exists",
+			}))
 		}
 		// Success.
 		user, err1 := getUser(username)
 		if err1 != nil {
-			fmt.Println("dfgdhgdgdfgh", err)
-			return c.Render(500, r.JSON(map[string]string{"message": "Internal Server error"}))
+			fmt.Println("Error fetching user", err)
+			return c.Render(500, r.JSON(map[string]interface{}{
+				"message": "Internal Server error",
+			}))
 		}
-		return c.Render(200, r.JSON(map[string]string{
+		return c.Render(200, r.JSON(map[string]interface{}{
 			"username": username,
-			"rating":   string(user.Rating),
+			"rating":   user.Rating,
 		}))
 	}
 	return c.Render(400, r.JSON(map[string]string{"message": "Bad request"}))
 }
 
+// GetUserInfoHandler : Return user info
+func GetUserInfoHandler(c buffalo.Context) error {
+	username := c.Param("username")
+	user, err := getUser(username)
+	if err != nil {
+		fmt.Println("Error fetching user info", err)
+		return c.Render(500, r.JSON(map[string]interface{}{
+			"message": err.Error(),
+		}))
+	}
+	return c.Render(200, r.JSON(user))
+}
 func encrypt(password string) ([]byte, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hashedPassword, err :=
+		bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
 	}
 	return hashedPassword, nil
 }
 
-func insertUser(c buffalo.Context, firstName string, lastName string, username string, email string, password []byte, bio string) error {
+// GetUsersInfoHandler : get all users
+func GetUsersInfoHandler(c buffalo.Context) error {
+	users, err := getUsers()
+	if err != nil {
+		return c.Render(403, r.JSON(map[string]interface{}{
+			"message": err.Error(),
+		}))
+	}
+	return c.Render(200, r.JSON(users))
+}
+
+func getUsers() ([]models.User, error) {
+	users := &[]models.User{}
+	err := models.DB.All(users)
+
+	if err != nil {
+		fmt.Println("getUsers error", err)
+		return *users, errors.New("Users doesn't exist")
+	}
+	return (*users), nil
+}
+
+func insertUser(c buffalo.Context, firstName string, lastName string,
+	username string, email string, password []byte, bio string) error {
+
 	user := &models.User{
 		FirstName: firstName,
 		LastName:  lastName,
@@ -61,15 +104,10 @@ func insertUser(c buffalo.Context, firstName string, lastName string, username s
 		Bio:       bio,
 		Rating:    0,
 	}
-	tx, ok := c.Value("tx").(*pop.Connection)
-	if !ok {
-		return errors.New("Transaction error")
-	}
-	verrs, err := tx.ValidateAndCreate(user)
+	_, err := models.DB.ValidateAndCreate(user)
 	if err != nil {
-		fmt.Println("test", err.Error())
+		fmt.Println("Error inserting user", err.Error())
 		return err
 	}
-	fmt.Println(verrs)
 	return nil
 }

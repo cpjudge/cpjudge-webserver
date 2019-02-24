@@ -6,7 +6,6 @@ import (
 
 	"github.com/cpjudge/cpjudge_webserver/models"
 	"github.com/gobuffalo/buffalo"
-	"github.com/gobuffalo/pop"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -23,11 +22,6 @@ func SigninHandler(c buffalo.Context) error {
 	if err != nil {
 		fmt.Println(err)
 	}
-	hosts := []models.Host{}
-	err = models.DB.All(&hosts)
-	if err != nil {
-		fmt.Println(err)
-	}
 	questions := []models.Question{}
 	err = models.DB.All(&questions)
 	if err != nil {
@@ -36,52 +30,54 @@ func SigninHandler(c buffalo.Context) error {
 	fmt.Println(questions)
 	fmt.Println(users)
 	fmt.Println(contests)
-	fmt.Println(hosts)
 	username := c.Request().URL.Query().Get("username")
 	password := c.Request().URL.Query().Get("password")
 	if username != "" && password != "" {
 		fmt.Println("IN")
 		err := verifyPassword(c, username, password)
 		if err != nil {
-			return c.Render(403, r.JSON(map[string]string{"message": err.Error()}))
+			return c.Render(403, r.JSON(map[string]interface{}{
+				"message": err.Error(),
+			}))
 		}
 		err = GenerateTokenAndSetCookie(c, username)
 		if err != nil {
-			return c.Render(500, r.JSON(map[string]string{"message": "Internal Server error"}))
+			return c.Render(500, r.JSON(map[string]interface{}{
+				"message": "Internal Server error",
+			}))
 		}
 		// Success.
 		user, err1 := getUser(username)
 		if err1 != nil {
 			fmt.Println(err)
-			return c.Render(500, r.JSON(map[string]string{"message": "Internal Server error"}))
+			return c.Render(500, r.JSON(map[string]interface{}{
+				"message": "Internal Server error",
+			}))
 		}
-		return c.Render(200, r.JSON(map[string]string{
-			"username": username,
-			"rating":   string(user.Rating),
-		}))
+		return c.Render(200, r.JSON(user))
 	}
-	return c.Render(400, r.JSON(map[string]string{"message": "Bad request"}))
+	return c.Render(400, r.JSON(map[string]interface{}{
+		"message": "Bad request",
+	}))
 }
 
 func getUser(username string) (models.User, error) {
 	users := &[]models.User{}
 	user := models.User{}
 	err := models.DB.Where("username = (?)", username).All(users)
+
 	if err != nil {
-		fmt.Println("errjhghkgkjhgkjgh", err)
+		fmt.Println("getUserInfo error", err)
 		return user, errors.New("User doesn't exist")
 	}
+
 	fmt.Println((*users)[0])
 	return (*users)[0], nil
 }
 
 func verifyPassword(c buffalo.Context, username string, password string) error {
-	tx, ok := c.Value("tx").(*pop.Connection)
-	if !ok {
-		return errors.New("Transaction error")
-	}
 	candidateUser := &[]models.User{}
-	fmt.Println("ad", tx.Where("username = ?", username).All(candidateUser))
+	fmt.Println("ad", models.DB.Where("username = ?", username).All(candidateUser))
 	if len((*candidateUser)) == 0 {
 		return errors.New("User Not Found")
 	}
