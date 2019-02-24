@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/cpjudge/cpjudge_webserver/models"
@@ -67,6 +68,28 @@ func encrypt(password string) ([]byte, error) {
 		return nil, err
 	}
 	return hashedPassword, nil
+}
+
+// GetUsersInfoHandler : get all users
+func GetUsersInfoHandler(c buffalo.Context) error {
+	users, err := getUsers()
+	if err != nil {
+		return c.Render(403, r.JSON(map[string]interface{}{
+			"message": err.Error(),
+		}))
+	}
+	return c.Render(200, r.JSON(users))
+}
+
+func getUsers() ([]models.User, error) {
+	users := &[]models.User{}
+	err := models.DB.All(users)
+
+	if err != nil {
+		fmt.Println("getUsers error", err)
+		return *users, errors.New("Users doesn't exist")
+	}
+	return (*users), nil
 }
 
 func insertUser(c buffalo.Context, firstName string, lastName string,
