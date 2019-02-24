@@ -6,6 +6,7 @@ import (
 
 	"github.com/cpjudge/cpjudge_webserver/models"
 	"github.com/gobuffalo/buffalo"
+	"github.com/gobuffalo/buffalo/binding"
 	"github.com/gobuffalo/uuid"
 )
 
@@ -14,8 +15,14 @@ func QuestionHandler(c buffalo.Context) error {
 	question := c.Request().URL.Query().Get("question")
 	editorial := c.Request().URL.Query().Get("editorial")
 	contestID := c.Request().URL.Query().Get("contest_id")
+	testCaseZip, err := c.File("test_cases")
+	if err != nil {
+		return c.Render(400, r.JSON(map[string]interface{}{
+			"message": err.Error(),
+		}))
+	}
 	if question != "" && contestID != "" {
-		err := insertQuestion(c, question, editorial, contestID)
+		err := insertQuestion(c, question, editorial, contestID, testCaseZip)
 		if err != nil {
 			return c.Render(400, r.JSON(map[string]interface{}{
 				"message": err.Error(),
@@ -67,7 +74,7 @@ func getQuestions() ([]models.Question, error) {
 }
 
 func insertQuestion(c buffalo.Context, questionText string,
-	editorial string, contestID string) error {
+	editorial string, contestID string, testCaseZip binding.File) error {
 
 	contestUUID, err := uuid.FromString(contestID)
 	if err != nil {
@@ -77,6 +84,7 @@ func insertQuestion(c buffalo.Context, questionText string,
 		QuestionText: questionText,
 		Editorial:    editorial,
 		ContestID:    contestUUID,
+		TestCaseZip:  testCaseZip,
 	}
 	verrs, err := models.DB.ValidateAndCreate(question)
 	if err != nil {

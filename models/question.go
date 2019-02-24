@@ -2,22 +2,46 @@ package models
 
 import (
 	"encoding/json"
+	"io"
+	"os"
+	"path/filepath"
 	"time"
 
+	"github.com/gobuffalo/buffalo/binding"
 	"github.com/gobuffalo/pop"
 	"github.com/gobuffalo/uuid"
 	"github.com/gobuffalo/validate"
 	"github.com/gobuffalo/validate/validators"
+	"github.com/pkg/errors"
 )
 
 // Question - Represents a question
 type Question struct {
-	ID           uuid.UUID `json:"id" db:"id"`
-	CreatedAt    time.Time `json:"-" db:"created_at"`
-	UpdatedAt    time.Time `json:"-" db:"updated_at"`
-	QuestionText string    `json:"question" db:"question"`
-	Editorial    string    `json:"editorial" db:"editorial"`
-	ContestID    uuid.UUID `json:"contest_id" db:"contest_id" has_one:"contests" fk_id:"id"`
+	ID           uuid.UUID    `json:"id" db:"id"`
+	CreatedAt    time.Time    `json:"-" db:"created_at"`
+	UpdatedAt    time.Time    `json:"-" db:"updated_at"`
+	QuestionText string       `json:"question" db:"question"`
+	Editorial    string       `json:"editorial" db:"editorial"`
+	ContestID    uuid.UUID    `json:"contest_id" db:"contest_id" has_one:"contests" fk_id:"id"`
+	TestCaseZip  binding.File `json:"-" db:"-" form:"test_cases"`
+}
+
+// AfterCreate - to save the file into a directory
+func (q *Question) AfterCreate(tx *pop.Connection) error {
+	if !q.TestCaseZip.Valid() {
+		return nil
+	}
+	dir := filepath.Join(".", "uploads")
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return errors.WithStack(err)
+	}
+	f, err := os.Create(filepath.Join(dir, q.TestCaseZip.Filename))
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	defer f.Close()
+	_, err = io.Copy(f, q.TestCaseZip)
+	return err
 }
 
 // String is not required by pop and may be deleted

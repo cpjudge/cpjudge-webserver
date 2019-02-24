@@ -1,6 +1,0 @@
-create_table("test_cases") {
-	t.Column("id", "uuid", {primary: true})
-	t.Column("test_case", "string", {})
-	t.Column("question_id", "uuid", {})
-	t.ForeignKey("question_id", {"questions": ["id"]}, {"on_delete": "cascade"})
-}
