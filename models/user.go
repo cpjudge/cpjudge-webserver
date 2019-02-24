@@ -13,14 +13,14 @@ import (
 // User - represents a user in the system
 type User struct {
 	ID        uuid.UUID `json:"id" db:"id"`
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
+	CreatedAt time.Time `json:"-" db:"created_at"`
+	UpdatedAt time.Time `json:"-" db:"updated_at"`
 	FirstName string    `json:"first_name" db:"first_name"`
 	LastName  string    `json:"last_name" db:"last_name"`
 	Username  string    `json:"username" db:"username"`
 	Email     string    `json:"email" db:"email"`
-	Password  []byte    `json:"password" db:"password"`
-	Bio       string    `json:"bio" db:"email"`
+	Password  []byte    `json:"-" db:"password"`
+	Bio       string    `json:"bio" db:"bio"`
 	Rating    int       `json:"rating" db:"rating"`
 }
 

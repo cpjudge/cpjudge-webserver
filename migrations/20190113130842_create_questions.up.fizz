@@ -2,8 +2,6 @@ create_table("questions") {
 	t.Column("id", "uuid", {primary: true})
 	t.Column("question", "string", {})
 	t.Column("editorial", "string", {"null": true})
-	t.Column("host_id", "uuid", {})
 	t.Column("contest_id", "uuid", {})
-	t.ForeignKey("host_id", {"hosts": ["id"]}, {"on_delete": "cascade"})
 	t.ForeignKey("contest_id", {"contests": ["id"]}, {"on_delete": "cascade"})
 }

@@ -17,7 +17,6 @@ type Question struct {
 	UpdatedAt    time.Time `json:"updated_at" db:"updated_at"`
 	QuestionText string    `json:"question" db:"question"`
 	Editorial    string    `json:"editorial" db:"editorial"`
-	HostID       uuid.UUID `json:"host_id" db:"host_id" has_one:"hosts" fk_id:"id"`
 	ContestID    uuid.UUID `json:"contest_id" db:"contest_id" has_one:"contests" fk_id:"id"`
 }
 
