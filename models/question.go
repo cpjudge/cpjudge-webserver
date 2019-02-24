@@ -13,8 +13,8 @@ import (
 // Question - Represents a question
 type Question struct {
 	ID           uuid.UUID `json:"id" db:"id"`
-	CreatedAt    time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at" db:"updated_at"`
+	CreatedAt    time.Time `json:"-" db:"created_at"`
+	UpdatedAt    time.Time `json:"-" db:"updated_at"`
 	QuestionText string    `json:"question" db:"question"`
 	Editorial    string    `json:"editorial" db:"editorial"`
 	ContestID    uuid.UUID `json:"contest_id" db:"contest_id" has_one:"contests" fk_id:"id"`
