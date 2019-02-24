@@ -14,9 +14,9 @@ import (
 type ParticipateIn struct {
 	ID        uuid.UUID `json:"id" db:"id"`
 	UserID    uuid.UUID `json:"user_id" db:"user_id" has_one:"users" fk_id:"id"`
-	ContestID uuid.UUID `json:"contest_id" db:"contest_id" has_one:"contests" fk_id:"id"`
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
+	ContestID uuid.UUID `json:"contest_id" db:"contest_id" has_many:"contests" fk_id:"id"`
+	CreatedAt time.Time `json:"-" db:"created_at"`
+	UpdatedAt time.Time `json:"-" db:"updated_at"`
 }
 
 // String is not required by pop and may be deleted

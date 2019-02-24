@@ -49,9 +49,9 @@ func App() *buffalo.App {
 		authenticateGroup.Use(AuthenticationMiddleware)
 		authenticateGroup.GET("/", HomeHandler)
 		app.GET("/websocket", WebSocketHandler)
-		app.POST("/users", SignupHandler)
 		authenticateGroup.GET("/users/{username}", GetUserInfoHandler)
 		app.POST("/login", SigninHandler).Name("login")
+		app.POST("/users", SignupHandler)
 		authenticateGroup.GET("/users/", GetUsersInfoHandler)
 
 		authenticateGroup.POST("/question", QuestionHandler)
@@ -63,7 +63,7 @@ func App() *buffalo.App {
 		authenticateGroup.GET("/contest/{contest_id}", GetContestHandler)
 
 		authenticateGroup.POST("/participate_in", ParticipateInHandler)
-		// AuthenticateGroup.GET("/participates_in/{user_id}", GetParticipatesInHandler)
+		authenticateGroup.GET("/participate_in/{user_id}", GetParticipatesInHandler)
 
 	}
 
