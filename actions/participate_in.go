@@ -1,19 +1,15 @@
 package actions
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/cpjudge/cpjudge_webserver/models"
 	"github.com/gobuffalo/buffalo"
-	"github.com/gobuffalo/pop"
 	"github.com/gofrs/uuid"
 )
 
 // ParticipateInHandler default implementation.
 func ParticipateInHandler(c buffalo.Context) error {
-	fmt.Println("In ParticipateIn")
-	fmt.Println("GET params were:", c.Request().URL.Query())
 	userID := c.Request().URL.Query().Get("user_id")
 	contestID := c.Request().URL.Query().Get("contest_id")
 	if userID != "" && contestID != "" {
@@ -70,15 +66,10 @@ func insertParticiapteIn(c buffalo.Context, userID string, contestID string) err
 		UserID:    userUUID,
 		ContestID: contestUUID,
 	}
-	tx, ok := c.Value("tx").(*pop.Connection)
-	if !ok {
-		return errors.New("Transaction error")
-	}
-	verrs, err := tx.ValidateAndCreate(participateIn)
+	_, err = models.DB.ValidateAndCreate(participateIn)
 	if err != nil {
-		fmt.Println("test", err.Error())
+		fmt.Println("insert participate_in", err.Error())
 		return err
 	}
-	fmt.Println(verrs)
 	return nil
 }

@@ -808,6 +808,7 @@
   input-imports = [
     "github.com/dgrijalva/jwt-go",
     "github.com/gobuffalo/buffalo",
+    "github.com/gobuffalo/buffalo/binding",
     "github.com/gobuffalo/buffalo/middleware",
     "github.com/gobuffalo/buffalo/middleware/ssl",
     "github.com/gobuffalo/buffalo/render",
@@ -822,6 +823,7 @@
     "github.com/gofrs/uuid",
     "github.com/gorilla/websocket",
     "github.com/markbates/grift/grift",
+    "github.com/pkg/errors",
     "github.com/rs/cors",
     "github.com/unrolled/secure",
     "golang.org/x/crypto/bcrypt",
