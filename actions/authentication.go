@@ -2,7 +2,6 @@ package actions
 
 import (
 	"errors"
-	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gobuffalo/buffalo"
@@ -45,8 +44,7 @@ func AuthenticationMiddleware(next buffalo.Handler) buffalo.Handler {
 
 // GenerateTokenAndSetCookie : Generates a new token from the username
 // in header and returns the signed token as a string.
-func GenerateTokenAndSetCookie(c buffalo.Context) error {
-	username := c.Request().Header.Get("username")
+func GenerateTokenAndSetCookie(c buffalo.Context, username string) error {
 	// fmt.Println(username)
 	if username == "" {
 		return errors.New("username not provided")
@@ -59,6 +57,6 @@ func GenerateTokenAndSetCookie(c buffalo.Context) error {
 	if err != nil {
 		return err
 	}
-	c.Cookies().SetWithExpirationTime(CpJudgeToken, tokenString, time.Now().AddDate(1, 0, 0)) // Expires after a year
+	c.Cookies().SetWithPath(CpJudgeToken, tokenString, "/") // Expires after a year
 	return nil
 }
