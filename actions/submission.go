@@ -5,7 +5,6 @@ import (
 
 	"github.com/cpjudge/cpjudge_webserver/models"
 	"github.com/gobuffalo/buffalo"
-	"github.com/gobuffalo/buffalo/binding"
 	"github.com/gobuffalo/uuid"
 )
 
@@ -13,13 +12,8 @@ import (
 func SubmissionHandler(c buffalo.Context) error {
 	userID := c.Request().URL.Query().Get("user_id")
 	questionID := c.Request().URL.Query().Get("question_id")
-	submissionFile, err := c.File("submission_file")
-	if err != nil {
-		return c.Render(400, r.JSON(map[string]interface{}{
-			"message": err.Error(),
-		}))
-	}
-	if userID != "" && questionID != "" {
+	submissionFile := c.Request().URL.Query().Get("submission_file")
+	if userID != "" && questionID != "" && submissionFile != "" {
 		err := insertSubmission(userID, questionID, 0, submissionFile)
 		if err != nil {
 			return c.Render(400, r.JSON(map[string]interface{}{
@@ -36,7 +30,7 @@ func SubmissionHandler(c buffalo.Context) error {
 }
 
 func insertSubmission(userID string, questionID string,
-	status int, submissionFile binding.File) error {
+	status int, submissionFile string) error {
 
 	userUUID, err := uuid.FromString(userID)
 	if err != nil {

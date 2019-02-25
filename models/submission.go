@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/gobuffalo/buffalo/binding"
 	"github.com/gobuffalo/pop"
 	"github.com/gobuffalo/uuid"
 	"github.com/gobuffalo/validate"
@@ -16,30 +15,30 @@ import (
 
 // Submission - To store question submissions
 type Submission struct {
-	ID             uuid.UUID    `json:"id" db:"id"`
-	CreatedAt      time.Time    `json:"created_at" db:"created_at"`
-	UpdatedAt      time.Time    `json:"updated_at" db:"updated_at"`
-	QuestionID     uuid.UUID    `json:"question_id" db:"question_id" has_one:"questions" fk_id:"id"`
-	UserID         uuid.UUID    `json:"user_id" db:"user_id" has_one:"users" fk_id:"id"`
-	Status         int          `json:"status" db:"status"`
-	SubmissionFile binding.File `json:"-" db:"-" form:"submission_file"`
+	ID             uuid.UUID `json:"id" db:"id"`
+	CreatedAt      time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at" db:"updated_at"`
+	QuestionID     uuid.UUID `json:"question_id" db:"question_id" has_one:"questions" fk_id:"id"`
+	UserID         uuid.UUID `json:"user_id" db:"user_id" has_one:"users" fk_id:"id"`
+	Status         int       `json:"status" db:"status"`
+	SubmissionFile string    `json:"-" db:"-"`
 }
 
 // AfterCreate - to save the file into a directory
 func (s *Submission) AfterCreate(tx *pop.Connection) error {
-	if !s.SubmissionFile.Valid() {
+	if s.SubmissionFile == "" {
 		return nil
 	}
 	dir := filepath.Join(".", "uploads")
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return errors.WithStack(err)
 	}
-	f, err := os.Create(filepath.Join(dir, s.SubmissionFile.Filename))
+	f, err := os.Create(filepath.Join(dir, s.ID.String()))
 	if err != nil {
 		return errors.WithStack(err)
 	}
 	defer f.Close()
-	_, err = io.Copy(f, s.SubmissionFile)
+	_, err = io.WriteString(f, s.SubmissionFile)
 	return err
 }
 
