@@ -20,6 +20,7 @@ type Submission struct {
 	UpdatedAt      time.Time `json:"updated_at" db:"updated_at"`
 	QuestionID     uuid.UUID `json:"question_id" db:"question_id" has_one:"questions" fk_id:"id"`
 	UserID         uuid.UUID `json:"user_id" db:"user_id" has_one:"users" fk_id:"id"`
+	Language       string    `json:"language" db:"language"`
 	Status         int       `json:"status" db:"status"`
 	SubmissionFile string    `json:"-" db:"-"`
 }

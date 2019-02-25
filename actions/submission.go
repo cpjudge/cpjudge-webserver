@@ -13,8 +13,11 @@ func SubmissionHandler(c buffalo.Context) error {
 	userID := c.Request().URL.Query().Get("user_id")
 	questionID := c.Request().URL.Query().Get("question_id")
 	submissionFile := c.Request().URL.Query().Get("submission_file")
-	if userID != "" && questionID != "" && submissionFile != "" {
-		err := insertSubmission(userID, questionID, 0, submissionFile)
+	language := c.Request().URL.Query().Get("language")
+	if userID != "" && questionID != "" &&
+		submissionFile != "" && language != "" {
+
+		err := insertSubmission(userID, questionID, 0, language, submissionFile)
 		if err != nil {
 			return c.Render(400, r.JSON(map[string]interface{}{
 				"message": err.Error(),
@@ -30,7 +33,7 @@ func SubmissionHandler(c buffalo.Context) error {
 }
 
 func insertSubmission(userID string, questionID string,
-	status int, submissionFile string) error {
+	status int, language string, submissionFile string) error {
 
 	userUUID, err := uuid.FromString(userID)
 	if err != nil {
@@ -44,6 +47,7 @@ func insertSubmission(userID string, questionID string,
 		UserID:         userUUID,
 		QuestionID:     questionUUID,
 		SubmissionFile: submissionFile,
+		Language:       language,
 		Status:         status,
 	}
 	_, err = models.DB.ValidateAndCreate(submission)
