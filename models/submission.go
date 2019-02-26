@@ -30,7 +30,7 @@ func (s *Submission) AfterCreate(tx *pop.Connection) error {
 	if s.SubmissionFile == "" {
 		return nil
 	}
-	dir := filepath.Join(".", "uploads")
+	dir := filepath.Join(".", "uploads", "submissions", s.QuestionID.String())
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return errors.WithStack(err)
 	}
