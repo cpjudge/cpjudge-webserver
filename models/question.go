@@ -17,30 +17,43 @@ import (
 
 // Question - Represents a question
 type Question struct {
-	ID           uuid.UUID    `json:"id" db:"id"`
-	CreatedAt    time.Time    `json:"-" db:"created_at"`
-	UpdatedAt    time.Time    `json:"-" db:"updated_at"`
-	QuestionText string       `json:"question" db:"question"`
-	Editorial    string       `json:"editorial" db:"editorial"`
-	ContestID    uuid.UUID    `json:"contest_id" db:"contest_id" has_one:"contests" fk_id:"id"`
-	TestCaseZip  binding.File `json:"-" db:"-" form:"test_cases"`
+	ID                uuid.UUID    `json:"id" db:"id"`
+	CreatedAt         time.Time    `json:"-" db:"created_at"`
+	UpdatedAt         time.Time    `json:"-" db:"updated_at"`
+	QuestionText      string       `json:"question" db:"question"`
+	Editorial         string       `json:"editorial" db:"editorial"`
+	ContestID         uuid.UUID    `json:"contest_id" db:"contest_id" has_one:"contests" fk_id:"id"`
+	TestCaseInputZip  binding.File `json:"-" db:"-" form:"test_cases_input"`
+	TestCaseOutputZip binding.File `json:"-" db:"-" form:"test_cases_output"`
 }
 
 // AfterCreate - to save the file into a directory
 func (q *Question) AfterCreate(tx *pop.Connection) error {
-	if !q.TestCaseZip.Valid() {
+	if !q.TestCaseInputZip.Valid() && !q.TestCaseOutputZip.Valid() {
 		return nil
 	}
-	dir := filepath.Join(".", "uploads")
+	// test_cases -> input
+	dir := filepath.Join(".", "questions", "testcases", q.ID.String(), "input")
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return errors.WithStack(err)
 	}
-	f, err := os.Create(filepath.Join(dir, q.TestCaseZip.Filename))
+	f, err := os.Create(filepath.Join(dir, q.TestCaseInputZip.Filename))
 	if err != nil {
 		return errors.WithStack(err)
 	}
 	defer f.Close()
-	_, err = io.Copy(f, q.TestCaseZip)
+	_, err = io.Copy(f, q.TestCaseInputZip)
+
+	// test_cases -> output
+	dir = filepath.Join(".", "questions", "testcases", q.ID.String(), "output")
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return errors.WithStack(err)
+	}
+	f, err = os.Create(filepath.Join(dir, q.TestCaseOutputZip.Filename))
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	_, err = io.Copy(f, q.TestCaseOutputZip)
 	return err
 }
 

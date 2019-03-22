@@ -372,6 +372,20 @@
   version = "v3.1.2"
 
 [[projects]]
+  digest = "1:239c4c7fd2159585454003d9be7207167970194216193a8a210b8d29576f19c9"
+  name = "github.com/golang/protobuf"
+  packages = [
+    "proto",
+    "ptypes",
+    "ptypes/any",
+    "ptypes/duration",
+    "ptypes/timestamp",
+  ]
+  pruneopts = "UT"
+  revision = "c823c79ea1570fb5ff454033735a8e68575d1d0f"
+  version = "v1.3.0"
+
+[[projects]]
   digest = "1:c79fb010be38a59d657c48c6ba1d003a8aa651fa56b579d959d74573b7dff8e1"
   name = "github.com/gorilla/context"
   packages = ["."]
@@ -736,6 +750,14 @@
   version = "v1.2.2"
 
 [[projects]]
+  digest = "1:ca5eec760b7aa59ff73fecd8e7ebf1f5463f0d464210f29c799bc15403a53ff4"
+  name = "github.com/udhos/equalfile"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "81e18cfeaeae863f9257f38987894f18cbf995a2"
+  version = "v0.3.0"
+
+[[projects]]
   branch = "master"
   digest = "1:647240fc604a7f9a20443958b0ec394d94a3d5b39c1d7fd560e0d1d53af6364b"
   name = "github.com/unrolled/secure"
@@ -757,12 +779,18 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:17847c677cb69303e0b8606b690f400c53485620a98d288aee1a215235118fcb"
+  digest = "1:d5a1ab82761bb357dcc90a5ca0f5356a573686fc37f21a51adc3830b0aa48fb6"
   name = "golang.org/x/net"
   packages = [
     "context",
     "html",
     "html/atom",
+    "http/httpguts",
+    "http2",
+    "http2/hpack",
+    "idna",
+    "internal/timeseries",
+    "trace",
   ]
   pruneopts = "UT"
   revision = "c10e9556a7bc0e7c942242b606f0acf024ad5d6a"
@@ -787,12 +815,84 @@
   revision = "9b800f95dbbc54abff0acf7ee32d88ba4e328c89"
 
 [[projects]]
+  digest = "1:a2ab62866c75542dd18d2b069fec854577a20211d7c0ea6ae746072a1dccdd18"
+  name = "golang.org/x/text"
+  packages = [
+    "collate",
+    "collate/build",
+    "internal/colltab",
+    "internal/gen",
+    "internal/tag",
+    "internal/triegen",
+    "internal/ucd",
+    "language",
+    "secure/bidirule",
+    "transform",
+    "unicode/bidi",
+    "unicode/cldr",
+    "unicode/norm",
+    "unicode/rangetable",
+  ]
+  pruneopts = "UT"
+  revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
+  version = "v0.3.0"
+
+[[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
   pruneopts = "UT"
   revision = "4a4468ece617fc8205e99368fa2200e9d1fad421"
   version = "v1.3.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:077c1c599507b3b3e9156d17d36e1e61928ee9b53a5b420f10f28ebd4a0b275c"
+  name = "google.golang.org/genproto"
+  packages = ["googleapis/rpc/status"]
+  pruneopts = "UT"
+  revision = "4f5b463f9597cbe0dd13a6a2cd4f85e788d27508"
+
+[[projects]]
+  digest = "1:6697869802a5de7544cd97ce37ac9044fba6c7af093ab08d7af108e977bcf66b"
+  name = "google.golang.org/grpc"
+  packages = [
+    ".",
+    "balancer",
+    "balancer/base",
+    "balancer/roundrobin",
+    "binarylog/grpc_binarylog_v1",
+    "codes",
+    "connectivity",
+    "credentials",
+    "credentials/internal",
+    "encoding",
+    "encoding/proto",
+    "grpclog",
+    "internal",
+    "internal/backoff",
+    "internal/binarylog",
+    "internal/channelz",
+    "internal/envconfig",
+    "internal/grpcrand",
+    "internal/grpcsync",
+    "internal/syscall",
+    "internal/transport",
+    "keepalive",
+    "metadata",
+    "naming",
+    "peer",
+    "resolver",
+    "resolver/dns",
+    "resolver/passthrough",
+    "stats",
+    "status",
+    "tap",
+    "testdata",
+  ]
+  pruneopts = "UT"
+  revision = "2fdaae294f38ed9a121193c51ec99fecd3b13eb7"
+  version = "v1.19.0"
 
 [[projects]]
   digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"
@@ -821,12 +921,17 @@
     "github.com/gobuffalo/validate/validators",
     "github.com/gobuffalo/x/sessions",
     "github.com/gofrs/uuid",
+    "github.com/golang/protobuf/proto",
     "github.com/gorilla/websocket",
     "github.com/markbates/grift/grift",
     "github.com/pkg/errors",
     "github.com/rs/cors",
+    "github.com/udhos/equalfile",
     "github.com/unrolled/secure",
     "golang.org/x/crypto/bcrypt",
+    "google.golang.org/grpc",
+    "google.golang.org/grpc/credentials",
+    "google.golang.org/grpc/testdata",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
