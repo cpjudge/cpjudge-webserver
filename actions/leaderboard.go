@@ -112,9 +112,10 @@ func handleConnection(conn *grpc.ClientConn, contest *leaderboardClient.Contest,
 			for i, v := range leaderboardMap[contest.ContestId] {
 				if v == sendChannel {
 					log.Println("Removing channel", v)
-					leaderboardMap[contest.ContestId][i] = nil
+					leaderboardMap[contest.ContestId] = append(
+						leaderboardMap[contest.ContestId][:i],
+						leaderboardMap[contest.ContestId][i+1:]...)
 				}
-
 			}
 			close(sendChannel)
 			close(done)
