@@ -59,44 +59,37 @@ func handleConnection(conn *grpc.ClientConn, contest *leaderboardClient.Contest,
 		log.Printf("open stream error %v", err)
 	}
 	done := make(chan bool)
-	closeSend := make(chan bool)
 	go func() {
-		select {
-		case <-closeSend:
-			log.Println("Close receive stream")
-			return
-		default:
-			for {
-				contest := <-sendChannel
-				log.Println("Send", contest)
-				if contest != nil {
-					if err := stream.Send(contest); err != nil {
-						log.Printf("can not send %v", err)
-					}
+		for {
+			log.Println("Send")
+			contest := <-sendChannel
+			log.Println("Send", contest)
+			if contest != nil {
+				if err := stream.Send(contest); err != nil {
+					log.Printf("can not send %v", err)
 				}
+			} else {
+				return
 			}
 		}
 	}()
 	sendChannel <- contest
-	closeReceive := make(chan bool)
 	// Receive leaderboard
 	go func() {
-		select {
-		case <-closeReceive:
-			log.Println("Close receive stream")
-			return
-		default:
-			for {
-				resp, err := stream.Recv()
-				if err == io.EOF {
-					close(done)
-					return
-				}
-				if err != nil {
-					log.Printf("can not receive %v", err)
-				}
-				log.Println("Received", resp.String())
+		for {
+			log.Println("Receive")
+			resp, err := stream.Recv()
+			if err == io.EOF {
+				close(done)
+				return
 			}
+			if resp == nil {
+				return
+			}
+			if err != nil {
+				log.Printf("can not receive %v", err)
+			}
+			log.Println("Received", resp.String())
 		}
 
 	}()
@@ -104,11 +97,11 @@ func handleConnection(conn *grpc.ClientConn, contest *leaderboardClient.Contest,
 	// grpc bi-directional stream is closed properly.
 	go func() {
 		<-c.Done()
+		sendChannel <- nil
+		done <- true
 		if err := c.Err(); err != nil {
-			log.Println(err)
+			log.Println("Buffalo", err)
 		}
-		closeReceive <- true
-		closeSend <- true
 		log.Println("close call(reason: buffalo)")
 	}()
 	// Closes the bi-directional stream
@@ -116,14 +109,19 @@ func handleConnection(conn *grpc.ClientConn, contest *leaderboardClient.Contest,
 		<-ctx.Done()
 		if err := ctx.Err(); err != nil {
 			log.Println(err)
+			for i, v := range leaderboardMap[contest.ContestId] {
+				if v == sendChannel {
+					log.Println("Removing channel", v)
+					leaderboardMap[contest.ContestId][i] = nil
+				}
+
+			}
+			close(sendChannel)
+			close(done)
+			log.Println("stream closed")
+			log.Println("channel done and sendChannel closed")
 		}
-		close(done)
-		close(sendChannel)
-		close(closeReceive)
-		close(closeSend)
-		log.Println("stream closed")
-		log.Println("channel done closeReceive and sendChannel closed")
 	}()
 	<-done
-	log.Println("connection closed")
+	log.Println("connection will be closed")
 }
