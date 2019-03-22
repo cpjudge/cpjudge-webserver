@@ -65,6 +65,13 @@ func SubmissionHandler(c buffalo.Context) error {
 				"message": err.Error(),
 			}))
 		}
+		question, err := getQuestion(s.QuestionID.String())
+		if err != nil {
+			return c.Render(500, r.JSON(map[string]interface{}{
+				"message": err.Error(),
+			}))
+		}
+		TriggerLeaderboards(question.ContestID.String())
 		return c.Render(200, r.JSON(map[string]interface{}{
 			"code_status": codeStatus.CodeStatus.String(),
 		}))
