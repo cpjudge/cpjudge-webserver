@@ -54,9 +54,9 @@ func App() *buffalo.App {
 		app.POST("/users", SignupHandler)
 		authenticateGroup.GET("/users/", GetUsersInfoHandler)
 
-		authenticateGroup.POST("/question", QuestionHandler)
+		authenticateGroup.POST("/questions", QuestionHandler)
 		authenticateGroup.GET("/questions", GetQuestionsHandler)
-		authenticateGroup.GET("/question/{question_id}", GetQuestionHandler)
+		authenticateGroup.GET("/questions/{question_id}", GetQuestionHandler)
 
 		authenticateGroup.POST("/submission", SubmissionHandler)
 
@@ -66,6 +66,8 @@ func App() *buffalo.App {
 
 		authenticateGroup.POST("/participate_in", ParticipateInHandler)
 		authenticateGroup.GET("/participate_in/{user_id}", GetParticipatesInHandler)
+
+		authenticateGroup.GET("/leaderboard", LeaderboardHandler)
 
 	}
 

@@ -17,27 +17,28 @@ const cpJudgeSecret string = "Change_during_production"
 func AuthenticationMiddleware(next buffalo.Handler) buffalo.Handler {
 	return func(c buffalo.Context) error {
 		// Verify token
-		tokenString, err := c.Cookies().Get(CpJudgeToken)
-		if err != nil {
-			// No cookie
-			return c.Render(401, r.JSON(map[string]string{"message": err.Error()}))
-		}
+		// tokenString, err := c.Cookies().Get(CpJudgeToken)
+		// if err != nil {
+		// 	// No cookie
+		// 	return c.Render(401, r.JSON(map[string]string{"message": err.Error()}))
+		// }
 
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				// Wrong SigningMethod
-				return nil, errors.New("Wrong signing method")
-			}
-			return []byte(cpJudgeSecret), nil
-		})
-		if err != nil {
-			return c.Render(401, r.JSON(map[string]string{"message": err.Error()}))
-		}
-		// Process the request only if the token is Valid.
-		if token.Valid {
-			err := next(c)
-			return err
-		}
+		// token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// 	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+		// 		// Wrong SigningMethod
+		// 		return nil, errors.New("Wrong signing method")
+		// 	}
+		// 	return []byte(cpJudgeSecret), nil
+		// })
+		// if err != nil {
+		// 	return c.Render(401, r.JSON(map[string]string{"message": err.Error()}))
+		// }
+		// // Process the request only if the token is Valid.
+		// if token.Valid {
+		// 	err := next(c)
+		// 	return err
+		// }
+		next(c)
 		return nil
 	}
 }
