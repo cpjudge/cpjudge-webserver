@@ -119,8 +119,7 @@ func handleConnection(conn *grpc.ClientConn, contest *leaderboardClient.Contest,
 			}
 			close(sendChannel)
 			close(done)
-			log.Println("stream closed")
-			log.Println("channel done and sendChannel closed")
+			log.Println("channel done and sendChannel closed (stream closed)")
 		}
 	}()
 	<-done
