@@ -29,7 +29,7 @@ var (
 // }
 
 // GetLeaderboard : Spawns a connection to evaluator service and calls Evaluate()
-func GetLeaderboard(contest *Contest) *grpc.ClientConn {
+func GetLeaderboard() *grpc.ClientConn {
 	// Establish a connection with the leaderboard service.
 	flag.Parse()
 	var opts []grpc.DialOption
