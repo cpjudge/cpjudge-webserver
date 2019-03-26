@@ -1,5 +1,6 @@
 vendor/
-uploads/
+submissions/
+questions/
 **/*.log
 **/*.sqlite
 .idea/

@@ -30,17 +30,18 @@ func (s *Submission) AfterCreate(tx *pop.Connection) error {
 	if s.SubmissionFile == "" {
 		return nil
 	}
-	dir := filepath.Join(".", "uploads")
+	dir := filepath.Join(".", "submissions", s.ID.String())
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return errors.WithStack(err)
 	}
-	f, err := os.Create(filepath.Join(dir, s.ID.String()))
+	destination := filepath.Join(dir, "code")
+	f, err := os.Create(destination)
 	if err != nil {
 		return errors.WithStack(err)
 	}
 	defer f.Close()
 	_, err = io.WriteString(f, s.SubmissionFile)
-	return err
+	return nil
 }
 
 // String is not required by pop and may be deleted

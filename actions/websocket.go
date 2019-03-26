@@ -13,6 +13,16 @@ var websocketConn *websocket.Conn
 
 // WebSocketHandler - Handle websocket request
 func WebSocketHandler(c buffalo.Context) error {
+	var err error
+	websocketConn, err = GetWebsocketConnection(c)
+	if err != nil {
+		return nil
+	}
+	return nil
+}
+
+// GetWebsocketConnection - Returns a connection to the websocket.
+func GetWebsocketConnection(c buffalo.Context) (*websocket.Conn, error) {
 	r := c.Request()
 	w := c.Response()
 	var upgrader = websocket.Upgrader{
@@ -24,11 +34,9 @@ func WebSocketHandler(c buffalo.Context) error {
 	if err != nil {
 		fmt.Println("conn")
 		log.Println(err)
-		return err
+		return nil, err
 	}
-	websocketConn = conn
-	go onMessage()
-	return nil
+	return conn, nil
 }
 
 func onMessage() {
